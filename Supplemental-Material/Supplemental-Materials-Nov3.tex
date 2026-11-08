@@ -1,0 +1,374 @@
+\documentclass[12pt,a4paper]{article}
+%documentclass[asa,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1.2in]{geometry} 
+
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{tipa, amssymb}
+\usepackage{float}
+\usepackage{accents}
+%\newcommand{\undertilde}[1]{\underset{\widetilde{}}{#1}}
+\usepackage{graphicx} % leave off '[demo]' in real document\graphicspath{ {./images/} }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Balgobin Nandram
+\newbox\TempBox \newbox\TempBoxA
+\def\uwd#1{%
+	\ifmmode\setbox\TempBox=\hbox{$#1$}\else\setbox\TempBox=\hbox{#1}\fi%
+	\setbox\TempBoxA=\hbox to \wd\TempBox{\hss\char'176\hss}%
+	\rlap{\copy\TempBox}\smash{\lower10pt\hbox{\copy\TempBoxA}}%
+}
+\def\mathunderaccent#1{\let\theaccent#1\mathpalette\putaccentunder}
+\def\putaccentunder#1#2{\oalign{$#1#2$\crcr\hidewidth
+		\vbox to.2ex{\hbox{$#1\theaccent{}$}\vss}\hidewidth}}
+\def\ttilde#1{\tilde{\tilde{#1}}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\title{Supplemental Material}
+\begin{document}
+
+\begin{center}
+{\Large {\bf Supplemental Materials (SM), July 5, 2026}}
+\end{center}
+
+%\begin{center}
+\section*{Appendix C: Identifiability in the Mixture Model}
+%\end{center}
+%\def\theequation{G.\arabic{equation}}
+%\setcounter{equation}{0}
+
+We have $(\uwd{x}_i, y_i), i=1,\ldots,n,$  where
+$\uwd{x}_i$ are covariates and $y_i$ are values of the study variable, 
+and we consider the mixture model,
+$$
+y_i \mid p,\uwd{\beta}, \sigma^2, \rho \stackrel{ind} \sim (1-p)\mbox{Normal}\left(\uwd{x}_i^\prime 
+\uwd{\beta}, \rho \sigma^2\right) + p \mbox{Normal}\left(\uwd{x}_i^\prime \uwd{\beta}, \sigma^2\right), 0< p < \frac{1}{2}, 0<\rho < 1.
+$$
+Without loss of generality, we drop the survey weights.
+Note that for each $i=1,\ldots,n,$ the two components have the same mean, $\uwd{x}_i^\prime \uwd{\beta}$, so that the distribution is symmetric about the mean, and outliers can be in both
+tails, although we can consider outliers only in the right tail. Here, we show that the
+parameters $p, \uwd{\beta}, \rho, \sigma^2$ are identifiable. We also show that
+the joint posterior density of $\pi(p, \uwd{\beta},\rho,\sigma^2\mid \uwd{y})$
+under flat priors is proper.
+
+Identifiability is demonstrated in the following steps.
+\begin{itemize}
+   \item[1.] Separate the data into two groups, $G$ and $G^c$. This can be done by
+	ordering the $y_1,\ldots,y_n$ from smallest to largest and looking for a separation
+	among the larger values. Let $m > \frac{n}{2}$ denote the cardinality of $G$. Then
+	$\hat{p} = (n-m)/n$.
+	 \item[2.] Since the two components of the $y_i$ have the same mean, we can use least squares
+	 to get $\hat{\uwd{\beta}} = \biggl(\sum_{i=1}^n \uwd{x}_i \uwd{x_i}^\prime\biggr)^{-1} 
+	 \sum_{i=1}^n \uwd{x}_i y_i$, where we assume the design matrix is full rank.
+	 \item[3.] Consider the residuals, $y_i -\uwd{x}_i^\prime \hat{\uwd{\beta}}, i=1,\ldots,n$. 
+	  Using the residuals in $G$, we can obtain the intra-class correlation, $\hat{\rho}$. This can be obtained by pairing the residuals. If $\hat{\rho} < 0$, take $\hat{\rho} = 0$. Also, let $S_0^2$ denote the sample variance of the
+			residuals in $G$ and $S_1^2$ the sample variance of the residuals in $G^c$. Then,
+			$\hat{\rho} = \frac{S_0^2}{S_1^2}$, and 
+			 if $\hat{\rho} > 1$, take $\hat{\rho} = 1$.
+	 \item[4.] Noting that $\mbox{Var}(y_i) = \left\{(1-p)\rho + p \right\} \sigma^2, i=1,\ldots,n$, we have
+	$$
+	\left\{(1-\hat{p}) \hat{\rho} +\hat{p} \right\} \hat{\sigma^2} = \frac{\sum_{i=1}^n(y_i-\uwd{x}_i^\prime \uwd{\beta})^2}{n-c},
+	$$
+	where $c$ is the number covariates including the intercept. That is,
+	$$
+	\hat{\sigma^2} = \frac{\sum_{i=1}^n(y_i-\uwd{x}_i^\prime \uwd{\beta})^2}{(n-c)	
+	\{(1-\hat{p}) \hat{\rho} +\hat{p} \}}. 
+	$$
+\end{itemize} 
+
+Therefore, the parameters, $p, \uwd{\beta}, \rho, \sigma^2$, are identifiable. Of course, fitting the Bayesian model with prior,
+$$
+\pi(p,\uwd{\beta},\rho, \sigma^2) \propto \frac{1}{\sigma^2},
+0<p<\frac{1}{2}, 0 <\rho< 1,
+$$
+will provide posterior densities of these parameters, and better posterior summaries.
+
+%\newpage
+
+%\begin{center}
+\section*{Appendix D:  Propriety of the Joint Posterior Density of the Mixture Model}
+%\end{center}
+%\def\theequation{H.\arabic{equation}}
+%\setcounter{equation}{0}
+
+We consider the Bayesian version of our mixture model,
+$$
+y_i \mid p,\uwd{\beta}, \sigma^2, \rho \stackrel{ind} \sim (1-p)\mbox{Normal}\left(\uwd{x}_i^\prime 
+\uwd{\beta}, \rho \sigma^2\right) + p \mbox{Normal}\left(\uwd{x}_i^\prime \uwd{\beta}, \sigma^2\right),
+i=1,\ldots,n, 
+$$
+$$
+\pi(p,\uwd{\beta},\rho,\sigma^2) \propto \frac{1}{\sigma^2}, 0<p<\frac{1}{2},
+0 < \rho < 1.
+$$
+Without loss of generality, we drop the survey weights.
+The joint posterior density is
+$$
+\pi(p, \uwd{\beta},\rho,\sigma^2 \mid \uwd{y}) \propto
+$$
+$$
+\frac{1}{\sigma^2} \prod_{i=1}^n\biggl\{(1-p)\mbox{Normal}\left(\uwd{x}_i^\prime \uwd{\beta},
+\rho \sigma^2\right) + p\mbox{Normal}\left(\uwd{x}_i^\prime \uwd{\beta},
+\sigma^2\right)\biggr\}, 0<p<\frac{1}{2}, 0<\rho<1.
+$$
+It is easy to show that the joint posterior density is proper. 
+
+For this purpose, we introduce independent binary latent variables, $z_i = 0, 1, i=1,\ldots,n$. Then, $(y_i,z_i), i=1,\ldots,n,$ are independent, and the joint posterior density is
+$$
+\pi(\uwd{z}, p, \uwd{\beta},\rho,\sigma^2 \mid \uwd{y}) \propto
+$$
+$$
+\frac{1}{\sigma^2} 
+\times
+\prod_{i=1}^n \biggl\{(1-p)\mbox{Normal}\left(\uwd{x}_i^\prime \uwd{\beta},
+\rho \sigma^2\right)\biggr\}^{1-z_i} \biggl\{p\mbox{Normal}\left(\uwd{x}_i^\prime \uwd{\beta},
+\sigma^2\right)\biggr\}^{z_i}, 0<p<\frac{1}{2}, 0<\rho<1.
+$$
+Assuming that the design matrix is full rank,
+it is easy to integrate out $(p, \uwd{\beta}, \sigma^2)$ to get $\pi(\uwd{z},\rho\mid \uwd{y})$.
+
+We can now sum $\pi(\uwd{z},\rho\mid \uwd{y})$ over all $z_i$ ($n$ summations) to get
+$\pi(\rho \mid \uwd{y})$.
+Then, finally assuming $\epsilon \leq \rho \leq 1-\epsilon$, where $\epsilon$ is
+a small positive real number, the 
+integral over $\rho$ is finite. Therefore,
+$\pi(p, \uwd{\beta},\rho,\sigma^2\mid \uwd{y})$ is proper.
+
+\clearpage
+\section*{Appendix E: Summary results of population parameters}
+%\clearpage
+
+\setcounter{table}{2}
+\begin{center}
+\begin{minipage}{0.8\textwidth}
+    \begin{table}[H]
+        \centering
+        \caption{Summaries of the parameters of non-robust population model.}
+        \resizebox{\textwidth}{!}{%
+            \begin{tabular}{@{}l*{6}{c}@{}} 
+                \hline
+                & Summaries & $\beta_0$ & $\beta_1$ & $\beta_2$ & $\beta_3$ & $\sigma^2$ \\ 
+                \hline
+                TR & ESS & 1000 & 1000 & 1000 & 1000 & 1000 \\
+                   & p-value & 0.140 & 0.297 & 0.633 & 0.053 & 0.521 \\
+                UNP & ESS & 1000 & 1000 & 1000 & 1000 & 1000 \\
+                    & p-value & 0.649 & 0.566 & 0.667 & 0.681 & 0.556 \\
+                UNNP & ESS & 1000 & 1000 & 1000 & 1000 & 1000 \\
+                     & p-value & 0.755 & 0.605 & 0.933 & 0.639 & 0.713 \\
+                \hline
+            \end{tabular}%
+        }
+        \vspace{0.5em}
+        \begin{minipage}{0.95\textwidth}
+            \footnotesize
+            \textit{Note:} Summaries are Effective Sample Size (ESS) and p-value of Geweke test.
+        \end{minipage}
+    \end{table}
+\end{minipage}
+
+\vspace{3cm}
+
+\begin{minipage}{\textwidth}
+    \begin{table}[H]
+        \centering
+        \caption{Posterior summaries of non-robust population model.}
+        \resizebox{\textwidth}{!}{%
+            \begin{tabular}{@{}l*{6}{c}@{}} 
+                \hline
+                & Summaries & $\beta_0$ & $\beta_1$ & $\beta_2$ & $\beta_3$ & $\sigma^2$ \\
+                \hline
+                TR & PM & 27.613 & -0.012 & 0.647 & 0.482 & 15.079 \\
+                   & PSD & 0.451 & 0.007 & 0.453 & 0.261 & 0.549 \\
+                   & NSE & 0.0002 & 0.0142 & 0.008 & 0.014 & 0.017 \\
+                   & PCV & 0.016 & 0.583 & 0.7 & 0.541 & 0.036 \\
+                   & $95\%$ HPDI & (26.773,28.507) & (-0.025,0.001) & (-0.230,1.529) & (0.003,1.011) & (14.06,16.14) \\
+                UNP & PM & 28.909 & -0.029 & 0.494 & 0.429 & 15.278 \\
+                    & PSD & 2.609 & 0.039 & 0.874 & 0.345 & 7.598 \\
+                    & NSE & 0.001 & 0.020 & 0.010 & 0.066 & 0.221 \\
+                    & PCV & 0.090 & 1.344 & 1.769 & 0.804 & 0.497 \\
+                    & $95\%$ HPDI & (25.725,35.326) & (-0.120,0.026) & (-0.927,1.661) & (-0.277,0.990) & (9.277,22.660) \\
+                UNNP & PM & 28.473 & -0.022 & 0.498 & 0.467 & 16.281 \\
+                     & PSD & 2.098 & 0.032 & 0.633 & 0.326 & 6.991 \\
+                     & NSE & 0.001 & 0.020 & 0.010 & 0.066 & 0.221 \\
+                     & PCV & 0.074 & 1.455 & 1.271 & 0.698 & 0.429 \\
+                     & $95\%$ HPDI & (25.659,33.670) & (-0.099,0.250) & (-0.743,1.561) & (-0.191,1.072) & (10.689,22.137) \\
+                \hline
+            \end{tabular}%
+        }
+        \vspace{0.5em}
+        \begin{minipage}{0.95\textwidth}
+            \footnotesize
+            \textit{Note:} Summaries are PM = posterior mean, PSD = posterior standard deviation, NSE = numeric standard error, PCV = posterior coefficient of variation, HPDI = highest posterior density interval.
+        \end{minipage}
+    \end{table}
+\end{minipage}
+\end{center}
+
+%\clearpage
+
+% ---------- PAGE 2 ----------
+\begin{center}
+\begin{minipage}{\textwidth}
+    \begin{table}[H]
+        \centering
+        \caption{Summaries of the parameters of robust population model.}
+        \resizebox{\textwidth}{!}{%
+            \begin{tabular}{@{}l*{8}{c}@{}} 
+                \hline
+                & Summaries & $\beta_0$ & $\beta_1$ & $\beta_2$ & $\beta_3$ & $\sigma^2$ & $\rho$ & $p$ \\
+                \hline
+                TR-R & ESS & 1000 & 1000 & 1000 & 1000 & 1000 & 1000 & 1000 \\
+                      & p-value & 0.902 & 0.862 & 0.218 & 0.557 & 0.413 & 0.957 & 0.053 \\
+                UNP-R & ESS & 1000 & 1000 & 1000 & 1000 & 1000 & 1000 & 1000 \\
+                       & p-value & 0.487 & 0.575 & 0.402 & 0.312 & 0.858 & 0.856 & 0.684 \\
+                UNNP-R & ESS & 1000 & 1000 & 1000 & 1000 & 1000 & 1000 & 1000 \\
+                        & p-value & 0.736 & 0.825 & 0.556 & 0.113 & 0.737 & 0.822 & 0.157 \\
+                \hline
+            \end{tabular}%
+        }
+        \vspace{0.5em}
+        \begin{minipage}{0.95\textwidth}
+            \footnotesize
+            \textit{Note:} Summaries are Effective Sample Size (ESS) and p-value of Geweke test.
+        \end{minipage}
+    \end{table}
+\end{minipage}
+
+\vspace{3cm}
+
+\begin{minipage}{1.1\textwidth}
+    \begin{table}[H]
+        \centering
+        \caption{Posterior summaries of robust population model.}
+        \resizebox{\textwidth}{!}{%
+            \begin{tabular}{@{}l*{8}{c}@{}} 
+                \hline
+                & Summaries & $\beta_0$ & $\beta_1$ & $\beta_2$ & $\beta_3$ & $\sigma^2$ & $\rho$ & $p$ \\
+                \hline
+                TR-R & PM & 26.940 & -0.001 & 0.030 & -0.024 & 53.19 & 0.167 & 0.159 \\
+                     & PSD & 0.433 & 0.007 & 0.400 & 0.260 & 12.334 & 0.033 & 0.040 \\
+                     & NSE & 0.013 & 0.0002 & 0.012 & 0.008 & 0.391 & 0.001 & 1.971 \\
+                     & PCV & 0.016 & 7.00 & 13.3 & 10.8 & 0.231 & 0.197 & 0.251 \\
+                     & $95\%$ HPDI & (26.095,27.809) & (-0.015,0.012) & (-0.773,0.790) & (-0.515,0.495) & (37.191,83.829) & (0.102,0.236) & (0.084,0.236) \\
+                UNP-R & PM & 27.425 & -0.008 & 0.171 & 0.034 & 35.972 & 0.137 & 0.313 \\
+                       & PSD & 1.707 & 0.025 & 0.688 & 0.314 & 16.609 & 0.048 & 0.155 \\
+                       & NSE & 0.053 & 0.0007 & 0.021 & 0.009 & 0.513 & 0.001 & 0.004 \\
+                       & PCV & 0.062 & 3.125 & 5.70 & 9.235 & 0.462 & 0.35 & 0.495 \\
+                       & $95\%$ HPDI & (25.284,31.656) & (-0.070,0.024) & (-0.932,1.366) & (-0.574,0.631) & (6.392,68.697) & (0.038,0.222) & (0.031,0.499) \\
+                UNNP-R & PM & 27.209 & -0.005 & 0.228 & 0.031 & 37.399 & 0.148 & 0.305 \\
+                        & PSD & 1.564 & 0.023 & 0.609 & 0.292 & 15.662 & 0.048 & 0.140 \\
+                        & NSE & 0.048 & 0.0007 & 0.019 & 0.009 & 0.498 & 0.001 & 0.004 \\
+                        & PCV & 0.057 & 4.60 & 0.57 & 0.119 & 0.418 & 0.324 & 0.459 \\
+                        & $95\%$ HPDI & (25.239,30.635) & (-0.057,0.027) & (-0.866,1.377) & (-0.551,0.636) & (9.686,68.290) & (0.048,0.237) & (0.051,0.498) \\
+                \hline
+            \end{tabular}%
+        }
+        \vspace{0.5em}
+        \begin{minipage}{0.95\textwidth}
+            \footnotesize
+            \textit{Note:} Summaries are PM = posterior mean, PSD = posterior standard deviation, NSE = numeric standard error, PCV = posterior coefficient of variation, HPDI = highest posterior density interval.
+        \end{minipage}
+    \end{table}
+\end{minipage}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+
+\section*{Appendix F: Boxplots for adjusted weights of all units in non-probability sample}
+
+
+\setcounter{figure}{3}
+
+In Figures 1 and 2, we show posterior densities of $\Bar{Y}$ under the six models.
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=14.8cm]{y_bar_compare.png}
+	\caption{Posterior distributions of $\Bar{Y}$ for TR(1), UNP(2) and UNNP(3).}
+	\label{fig1}
+\end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14.8cm]{y_bar_compare_robust.png}
+	\caption{Posterior distributions of $\Bar{Y}$ for TR-R(4), UNP-R(5) and UNNP-R(6).}
+	\label{fig1}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\clearpage
+
+
+
+%
+%\begin{figure}[ht]
+	%\centering
+	%\includegraphics[width=14.8cm]{y_bar_compare.png}
+	%\caption{Posterior distributions of $\Bar{Y}$ for TR(1), UNP(2) and UNNP(3).}
+	%\label{fig1}
+%\end{figure}
+%\begin{figure}[h]
+	%\centering
+	%\includegraphics[width=14.8cm]{y_bar_compare_robust.png}
+	%\caption{Posterior distributions of $\Bar{Y}$ for TR-R(4), UNP-R(5) and UNNP-R(6).}
+	%\label{fig1}
+%\end{figure}
+%
+
+
+
+
+
+
+
+
+
+
+
+
+\section*{Appendix G: Boxplots for adjusted weights of all units in non-probability sample}
+In Appendix G, we randomly select 500 units from the remaining observations, excluding the first 100 units in the non-probability sample. The boxplots represent
+the posterior density of each adjusted weight, obtained from the 1,000 iterates
+of the Gibbs sampler. We can see that some adjusted weights are very small while others are very large. Also, some
+adjusted weights are much more variable than others.
+
+%\setcounter{figure}{4}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14.8cm]{boxplot_part_5.png}
+	\caption{Boxplots for units in non-probability sample.}
+	\label{fig1}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14.8cm]{boxplot_part_7.png}
+	\caption{Boxplots for units in non-probability sample.}
+	\label{fig1}
+\end{figure}
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14.8cm]{boxplot_part_10.png}
+	\caption{Boxplots for units in non-probability sample.}
+	\label{fig1}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14.8cm]{boxplot_part_12.png}
+	\caption{Boxplots for units in non-probability sample.}
+	\label{fig1}
+\end{figure}
+
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=14.8cm]{boxplot_part_15.png}
+	\caption{Boxplots for units in non-probability sample.}
+	\label{fig1}
+\end{figure}
+\end{document}
