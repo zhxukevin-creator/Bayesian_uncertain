@@ -1,1 +1,3 @@
-Here we show the Supplemental-Material
+This supplementary material provides additional theoretical and numerical results for Bayesian inference with a non-probability sample when propensity scores are uncertain. It discusses identifiability of the two-component mixture model and shows that the joint posterior is proper under the stated conditions. It also reports parameter summaries and sampling diagnostics for the traditional, uncertainty, and robust models. Additional boxplots show posterior draws of adjusted weights for selected units. They illustrate that uncertainty in these weights varies across units and can be large for some of them. Together, these results support the use of the proposed models to account for propensity-score uncertainty when estimating the finite-population mean.
+
+Keywords: Adjusted survey weights, Gibbs sampling, logistic regression model, propensity scores, robust models, uncertainty models.
