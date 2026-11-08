@@ -13,7 +13,7 @@ common function for all methods.
 """
 
 import numpy as np
-from scipy.special import expit   # 数值稳定的 sigmoid
+from scipy.special import expit   
 
 # =============================================================================
 # log_p
