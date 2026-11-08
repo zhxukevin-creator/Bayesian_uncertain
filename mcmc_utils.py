@@ -9,43 +9,28 @@ Created on Sat Mar 28 09:50:40 2026
 """
 mcmc_utils.py
 =============
-所有 method 文件共用的数值稳定版工具函数。
-
-修复的三个数值问题：
-  1. log_p 中 log(1 + exp(x)) 溢出  → 用 np.logaddexp(0, x)
-  2. pi_inv 中 exp(a)/(1+exp(a)) 溢出 → 用 scipy.special.expit
-  3. bisection_sample 中 pr = NaN   → clip 到 [eps, 1-eps]
+common function for all methods.
 """
 
 import numpy as np
 from scipy.special import expit   # 数值稳定的 sigmoid
 
 # =============================================================================
-# 核心数学函数（数值稳定版）
+# log_p
 # =============================================================================
 
 def log_p(n_p, o_p, theta, d):
-    """
-    log p(d | theta) for logistic model.
-    修复：np.dot(o_p, theta) 可能很大，
-          原来 log(1 + exp(x)) 会溢出，
-          改用 np.logaddexp(0, x) 等价且稳定。
-    """
+    
     fpart = np.sum(n_p @ theta)
     lin   = o_p @ theta
-    spart = np.dot(d, np.logaddexp(0, lin))   # 稳定版 log(1+exp(x))
+    spart = np.dot(d, np.logaddexp(0, lin))   
     return fpart - spart
 
 def pi_inv(n_p, beta):
-    """
-    1 / pi(beta)，其中 pi = sigmoid(n_p @ logit(beta))。
-    修复：原来 exp(a)/(1+exp(a)) 在 a 很大时溢出，
-          改用 scipy.special.expit(a)，等价且稳定。
-    """
+  
     theta = np.log(beta / (1 - beta))
     a     = n_p @ theta
-    pi    = expit(a)                           # 稳定版 sigmoid
-    # 防止 pi=0 导致除零
+    pi    = expit(a)                           
     pi    = np.clip(pi, 1e-15, 1 - 1e-15)
     return 1.0 / pi
 
@@ -54,19 +39,10 @@ def g_func(n_p, beta):
     return sum(a) / sum(a**2) * a
 
 # =============================================================================
-# 通用二分采样器（数值稳定版）
+# sampler
 # =============================================================================
 
 def bisection_sample(log_target_fn, it):
-    """
-    在 (0,1) 上对单变量进行二分采样。
-    修复：den 全为 -inf 时 exp(den-max) 产生 NaN，
-          pr 变成 NaN 传入 binomial 报错。
-          加入三层保护：
-            1. den 中有 -inf 时用 nan_to_num 替换
-            2. l+r 为 0 时 pr 默认 0.5
-            3. pr clip 到 [eps, 1-eps]
-    """
     a, b = 0.0, 1.0
     eps  = 1e-10
 
@@ -77,32 +53,32 @@ def bisection_sample(log_target_fn, it):
         t2  = 0.5 * (x_gl + 1) * (mid - a) + a
         t   = np.concatenate((t2, t1))
 
-        # 计算 log density
+        # log density
         den = np.array([log_target_fn(ti) for ti in t])
 
-        # 保护1：将 -inf / NaN 替换为有限小值
+        
         den = np.nan_to_num(den, nan=-1e300, posinf=0, neginf=-1e300)
 
-        # log-sum-exp 归一化
+        # log-sum-exp normalize
         den_max = den.max()
         den     = np.exp(den - den_max)
         den_sum = den.sum()
         if den_sum == 0 or not np.isfinite(den_sum):
-            den = np.ones(6) / 6.0   # 退化为均匀分布
+            den = np.ones(6) / 6.0   
         else:
             den /= den_sum
 
         l = float(np.dot(w_gl, den[0:3])) * 0.5 * (mid - a)
         r = float(np.dot(w_gl, den[3:6])) * 0.5 * (b - mid)
 
-        # 保护2：l+r 为 0 时默认 0.5
+        
         lr = l + r
         if lr <= 0 or not np.isfinite(lr):
             pr = 0.5
         else:
             pr = r / lr
 
-        # 保护3：clip 到合法概率范围
+        
         pr = float(np.clip(pr, eps, 1.0 - eps))
 
         if np.random.binomial(1, pr):
@@ -113,14 +89,14 @@ def bisection_sample(log_target_fn, it):
     return float(np.random.uniform(a, b))
 
 # =============================================================================
-# 混合正态相关函数（method_1/2/5 共用）
+# mixture-normal（method_1/2/5 ）
 # =============================================================================
 
 def logp(p, y, x, beta_y, rho, sigma_2, w):
     mean   = x @ beta_y
     var1   = rho * sigma_2 / w
     var2   = sigma_2 / w
-    # 防止 var 为零或负
+    
     var1   = np.maximum(var1, 1e-15)
     var2   = np.maximum(var2, 1e-15)
     from scipy.stats import norm
@@ -153,7 +129,7 @@ def sample_rho_bi(z, gi, y, sigma_2, data, beta_y, it=5):
     )
 
 # =============================================================================
-# HPD 区间计算（所有 method 共用）
+# HPD （all method ）
 # =============================================================================
 
 def calculate_hpd(samples, alpha=0.05):
